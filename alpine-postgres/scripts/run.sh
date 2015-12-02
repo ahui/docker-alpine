@@ -12,7 +12,7 @@ setupdb() {
 		fi
 		gosu postgres initdb $PGDATA
 		sed -ri "s/^#(listen_addresses\s*=\s*)\S+/\1'*'/" "$PGDATA"/postgresql.conf
-		createdb
+		#createdb
 		adduser
 	else 
 		echo "[i] Directory already exists, not creating initial database"
@@ -44,10 +44,10 @@ adduser() {
 
 	if [ "$POSTGRES_USER" != 'postgres' ]; then
 		op=CREATE
-		userSql="$op USER $POSTGRES_USER WITH $pass;"
+		userSql="$op USER $POSTGRES_USER WITH SUPERUSER $pass;"
 		echo $userSql | gosu postgres postgres --single -jE
-		grantSql="GRANT ALL PRIVILEGES ON DATABASE $POSTGRES_DB TO $POSTGRES_USER;"
-		echo $grantSql | gosu postgres postgres --single -jE
+		#grantSql="GRANT ALL PRIVILEGES ON DATABASE $POSTGRES_DB TO $POSTGRES_USER;"
+		#echo $grantSql | gosu postgres postgres --single -jE
 	else
 		op=ALTER
 		userSql="$op USER $POSTGRES_USER WITH $pass;"
